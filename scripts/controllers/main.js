@@ -18,24 +18,47 @@ angular.module('EmaServerMarksApp')
 
     $scope.refreshEntries = function(){
       $http.get(serviceUrl).success(function (data) {
-            var filters = [];
+            var apps = [];
             _.each(data.items, function(entry){
-                filters.push(entry.application);
+                apps.push(entry.application);
             });
-            $scope.filters = _.uniq(filters);
-            $scope.applications = {};
-            _.each($scope.filters, function(filter){
-                $scope.applications[filter] = _.filter(data.items, function(item){
+            apps = _.uniq(apps);
+            $scope.environments = getEnvironments(apps, data.items);
+
+        });
+    };
+
+    function getEnvironments(apps, items){
+        var myMap = {};
+        var envs = ['dev', 'test', 'prod'];
+        _.each(envs, function(filter){
+                var env_apps = getApplicationsByEnv(filter, items);
+                if(env_apps.length > 0)
+                    myMap[filter] = getApplications(apps, env_apps);
+            });
+        return myMap;
+    }
+
+    function getApplicationsByEnv(env, items){
+        return _.filter(items, function(item){
+                if(item.environment.toLowerCase() === env)
+                    return item;
+            });
+    }
+
+    function getApplications(keys, items){
+        var myMap = {};
+        _.each(keys, function(filter){
+                var apps = _.filter(items, function(item){
                     if(item.application === filter)
                         return item;
                 });
+                if(apps.length>0)
+                    myMap[filter] = apps;
             });
+        return myMap;
+    }
 
-            log($scope.applications);
-
-            $scope.entries = data.items;
-        });
-    };
 
     $scope.showEdit = function () {
         $scope.isEditVisible = true;

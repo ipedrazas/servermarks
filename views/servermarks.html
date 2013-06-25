@@ -1,22 +1,24 @@
 <h1>ServerMarks</h1>
-<div class="hero-unit">
+
     <accordion close-others="false">
-        <accordion-group heading="{{key}}" ng-repeat="(key, value) in applications">
-            <table class="table">
-                <thead>
-                    <th>Name</th>
-                    <th>Url</th>
-                    <th>Environment</th>
-                </thead>
-                <tbody>
-                <tr data-id="{{entry.app_token}}" ng-repeat="entry in value">
-                    <td><strong>{{entry.name}}</strong></td>
-                    <td><a href="http://{{entry.url}}">{{entry.url}}</a></td>
-                    <td>{{entry.environment}}</td>
-                </tr>
-                </tbody>
-            </table>
+        <accordion-group heading="{{env}}" ng-repeat="(env, apps) in environments" style="text-transform: capitalize">
+            <accordion-group heading="{{key}}" ng-repeat="(key, value) in apps">
+                <table class="table">
+                    <thead>
+                        <th>Name</th>
+                        <th>Url</th>
+                        <th>Notes</th>
+                    </thead>
+                    <tbody>
+                    <tr data-id="{{entry.app_token}}" ng-repeat="entry in value">
+                        <td><strong>{{entry.name}}</strong></td>
+                        <td><a href="http://{{entry.url}}">{{entry.url}}</a></td>
+                        <td ng-bind-html-unsafe=(entry.notes)></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </accordion-group>
         </accordion-group>
     </accordion>
-</div>
+
 
